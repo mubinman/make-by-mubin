@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big or Small Prediction</title>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #0d0d0d;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #0d0d0d;
+        }
+        #text {
+            position: relative;
+            font-size: 50px;
+            font-weight: bold;
+            transition: font-size 0.5s ease-in-out;
+            margin-bottom: 20px;
+        }
+        #predictButton {
+            position: relative;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            background: #ff9800;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        #predictButton:hover {
+            background: #e68900;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div id="text">𝗧𝗠 𝗪𝗘𝗕 𝗣𝗩𝗧!</div>
+    <button id="predictButton">𝗣𝗘𝗥𝗜𝗗𝗜𝗖𝗧</button>
+
+    <script>
+        // Initialize Particles.js for background effect
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 100 },
+                size: { value: 4 },
+                move: { speed: 4 }
+            }
+        });
+
+        // Function to randomly predict "Big" or "Small"
+        function predictSize() {
+            const textElement = document.getElementById("text");
+            const isBig = Math.random() > 0.5; // 50/50 chance
+            if (isBig) {
+                textElement.style.fontSize = "50px";
+                textElement.textContent = "𝗕𝗜𝗚𝗚";
+            } else {
+                textElement.style.fontSize = "40px";
+                textElement.textContent = "𝗦𝗠𝗔𝗟𝗟";
+            }
+        }
+
+        // Event listener for button click
+        document.getElementById("predictButton").addEventListener("click", predictSize);
+    </script>
+
+</body>
+</html>
