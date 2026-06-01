@@ -1,89 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Big or Small Prediction</title>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #0d0d0d;
-            color: white;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            flex-direction: column;
-        }
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #0d0d0d;
-        }
-        #text {
-            position: relative;
-            font-size: 50px;
-            font-weight: bold;
-            transition: font-size 0.5s ease-in-out;
-            margin-bottom: 20px;
-        }
-        #predictButton {
-            position: relative;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            background: #ff9800;
-            color: white;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        #predictButton:hover {
-            background: #e68900;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leak Paper</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Consolas, monospace;
+}
+
+body{
+    background:#000;
+    color:#00ff41;
+    overflow:hidden;
+}
+
+/* Matrix Background */
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+
+.center{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.login-box{
+    background:rgba(0,0,0,0.8);
+    border:2px solid #00ff41;
+    box-shadow:0 0 20px #00ff41;
+    padding:40px;
+    text-align:center;
+    border-radius:15px;
+    width:350px;
+}
+
+.title{
+    font-size:32px;
+    margin-bottom:20px;
+    text-shadow:0 0 15px #00ff41;
+    animation:glow 1.5s infinite alternate;
+}
+
+@keyframes glow{
+    from{ text-shadow:0 0 10px #00ff41; }
+    to{ text-shadow:0 0 30px #00ff41; }
+}
+
+.typing{
+    overflow:hidden;
+    white-space:nowrap;
+    border-right:3px solid #00ff41;
+    width:0;
+    margin:auto;
+    animation:typing 4s steps(30,end) forwards,
+              blink .8s infinite;
+}
+
+@keyframes typing{
+    from{width:0}
+    to{width:100%}
+}
+
+@keyframes blink{
+    50%{border-color:transparent}
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#111;
+    border:1px solid #00ff41;
+    color:#00ff41;
+    outline:none;
+}
+
+button{
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    background:#00ff41;
+    color:#000;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    box-shadow:0 0 20px #00ff41;
+}
+
+#error{
+    color:red;
+    margin-top:10px;
+}
+
+#content{
+    display:none;
+    text-align:center;
+    padding-top:100px;
+}
+
+.big{
+    font-size:50px;
+    text-shadow:0 0 20px #00ff41;
+}
+
+.subtitle{
+    margin-top:20px;
+    font-size:20px;
+}
+</style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
-    <div id="text">𝗧𝗠 𝗪𝗘𝗕 𝗣𝗩𝗧!</div>
-    <button id="predictButton">𝗣𝗘𝗥𝗜𝗗𝗜𝗖𝗧</button>
+<canvas id="matrix"></canvas>
 
-    <script>
-        // Initialize Particles.js for background effect
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 100 },
-                size: { value: 3 },
-                move: { speed: 2 }
-            }
-        });
+<div id="login" class="center">
+    <div class="login-box">
+        <h1 class="title">𝗟𝗘𝗔𝗞 𝗣𝗔𝗣𝗘𝗥</h1>
 
-        // Function to randomly predict "Big" or "Small"
-        function predictSize() {
-            const textElement = document.getElementById("text");
-            const isBig = Math.random() > 0.5; // 50/50 chance
-            if (isBig) {
-                textElement.style.fontSize = "50px";
-                textElement.textContent = "𝗕𝗜𝗚𝗚";
-            } else {
-                textElement.style.fontSize = "40px";
-                textElement.textContent = "𝗦𝗠𝗔𝗟𝗟";
-            }
+        <p class="typing">ACCESS - ENTER PASSWORD</p>
+
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="unlock()">𝗘𝗡𝗧𝗘𝗥</button>
+
+        <p id="error"></p>
+    </div>
+</div>
+
+<div id="content">
+    <h1 class="big">ACCESS GRANTED</h1>
+    <p class="subtitle">Welcome to Leak Paper</p>
+    <br>
+    <p>System Connected...</p>
+</div>
+
+<script>
+// Password System
+function unlock(){
+    const pass = document.getElementById("password").value;
+
+    if(pass === "mafiyaleaker@091"){
+        document.getElementById("login").style.display="none";
+        document.getElementById("content").style.display="block";
+    }else{
+        document.getElementById("error").innerText="ACCESS DENIED!";
+    }
+}
+
+// Matrix Animation
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%^&*";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+
+const drops = [];
+
+for(let i=0;i<columns;i++){
+    drops[i]=1;
+}
+
+function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="#00ff41";
+    ctx.font=fontSize+"px monospace";
+
+    for(let i=0;i<drops.length;i++){
+        const text=chars[Math.floor(Math.random()*chars.length)];
+
+        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+        if(drops[i]*fontSize > canvas.height && Math.random()>0.975){
+            drops[i]=0;
         }
 
-        // Event listener for button click
-        document.getElementById("predictButton").addEventListener("click", predictSize);
-    </script>
+        drops[i]++;
+    }
+}
+
+setInterval(draw,35);
+</script>
 
 </body>
 </html>
